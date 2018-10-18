@@ -4,13 +4,13 @@ const abi = [{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","t
 const contrAddress = '0x6351f1c2e6dea96c9c608aa21c89663a3b7ea88e';
 
 inLogPath = "./eventlogs.json";
-outLogPath = "./eventlogsTimestamped.json";
+outLogPath = "./eventlogsCleaned.json";
 
 async function main(){
     await helpers.fetchEvents(abi,contrAddress);
     await helpers.transformLog(inLogPath,outLogPath);
+    await helpers.addTimestamp();
     console.log('All done');
-    process.exit();
 }
 
 main();

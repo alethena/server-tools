@@ -48,7 +48,7 @@ module.exports.fetchEvents = fetchEvents;
     console.log('-writing file')
     outfile.write(JSON.stringify(pastEvents), ()=> {
       console.log('-file written')
-      process.exit();
+      //process.exit();
     })
   }
   catch(error){

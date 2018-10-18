@@ -40,9 +40,8 @@ module.exports.fetchEvents = fetchEvents;
   try{
     console.log('-fetching events')
     pastEvents = await myContract.getPastEvents('allEvents', {fromBlock: 1, toBlock: 'latest'});
-    var outfile = fs.createWriteStream('eventlogs.json');
     console.log('-writing file')
-    outfile.write(JSON.stringify(pastEvents), ()=> {
+    fs.writeFileSync('eventlogs.json', JSON.stringify(pastEvents), ()=> {
       console.log('-file written')
       process.exit();
     })
@@ -55,16 +54,19 @@ module.exports.fetchEvents = fetchEvents;
 
 module.exports.transformLog = transformLog;
 
-function transformLog(_inLogPath, _outLogPath){
-    console.log(_inLogPath);
+async function transformLog(_inLogPath, _outLogPath){
     var eventlogs = JSON.parse(fs.readFileSync(_inLogPath));
-    console.log('test')
     var output = [];
-    var length = eventlogs.length;
+    var length = eventlogs.length -1;
+    await eventlogs.forEach(async element => {
 
-    eventlogs.forEach(async element => {
-        let block = await web3.eth.getBlock(element.blockNumber);
-        length--;
+        if (length == 0){
+            output.sort(comp);
+            fs.writeFileSync(_outLogPath,JSON.stringify(output));
+            console.log('Log was transformed');
+            process.exit();
+        }
+        
         var temp = new Object({
             "address": element.address,
             "blockNumber": element.blockNumber,
@@ -77,16 +79,10 @@ function transformLog(_inLogPath, _outLogPath){
             "value": element.returnValues.value,
             "shareholder": element.returnValues.shareholder,
             "amount": element.returnValues.amount,
-            "message": element.returnValues.message,
-            "timestamp": block.timestamp
+            "message": element.returnValues.message
             })
-            output.push(temp);
-            if (length == 0){
-                output.sort(comp)
-                fs.writeFileSync(_outLogPath,JSON.stringify(output));
-                console.log('Log was transformed');
-                process.exit();
-            }
+            output.push(temp);            
+            length--;
     });
 }
 
@@ -103,3 +99,29 @@ function comp(log1,log2){
 }
 
 
+
+module.exports.addTimestamp = addTimestamp;
+
+// 
+
+async function addTimestamp(){
+    var output = [];
+    var eventlogsCleaned = JSON.parse(fs.readFileSync('./eventlogsCleaned.json'));
+    var length = eventlogsCleaned.length;
+
+    console.log(length)
+
+    eventlogsCleaned.forEach(async element => {
+        length = length -1;
+        let block = await web3.eth.getBlock(obj.blockNumber);
+        element.timestamp = block.timestamp;
+        console.log(length)
+        if (length ==0){
+            fs.writeFileSync("./eventlogsTimestamped.json",JSON.stringify(output));
+            }
+        return 0;
+        
+    })};
+
+    
+    
