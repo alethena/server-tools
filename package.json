@@ -1,0 +1,19 @@
+{
+  "name": "servertools",
+  "version": "1.0.0",
+  "description": "Pulls and transforms logs from ETH blockchain",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Alethena/ServerTools.git"
+  },
+  "author": "benjamin@alethena.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Alethena/ServerTools/issues"
+  },
+  "homepage": "https://github.com/Alethena/ServerTools#readme"
+}
