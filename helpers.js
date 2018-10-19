@@ -1,6 +1,7 @@
 var Web3 = require('web3');
 var net = require('net');
 var fs = require('fs');
+var color = require('colors');
 
 
 //Connects to local "fast-sync" rinkeby node
@@ -23,26 +24,26 @@ module.exports.fetchEvents = fetchEvents;
   // I.e. call eth.syncing and the answer should be 'false'
   // Else we might end up in a situation where the information we obtain is not up to date but no error is thrown
   var myContract = await new web3.eth.Contract(_abi, _contrAddress);
-  console.log('-contract instantiated')
+  console.log('-contract instantiated'.green)
   await web3.eth.isSyncing( (err,resp)=>{
     if(err){
       throw(err)
     }
     else if (resp === false){
-      console.log('-ETH node is synced')
+      console.log('-ETH node is synced'.green)
     }
     else {
-      console.error('Something is wrong with your Ethereum node')
+      console.error('Something is wrong with your Ethereum node'.red)
     }
 
   })
 
   try{
-    console.log('-fetching events')
+    console.log('-fetching events'.yellow)
     pastEvents = await myContract.getPastEvents('allEvents', {fromBlock: 1, toBlock: 'latest'});
-    console.log('-writing file')
+    console.log('-writing file'.yellow)
     fs.writeFileSync('eventlogs.json', JSON.stringify(pastEvents), ()=> {
-      console.log('-file written')
+      console.log('-file written'.green)
       process.exit();
     })
   }
@@ -63,8 +64,7 @@ async function transformLog(_inLogPath, _outLogPath){
         if (length == 0){
             output.sort(comp);
             fs.writeFileSync(_outLogPath,JSON.stringify(output));
-            console.log('Log was transformed');
-            process.exit();
+            console.log('-log was transformed'.green);
         }
         
         var temp = new Object({
@@ -104,20 +104,22 @@ module.exports.addTimestamp = addTimestamp;
 
 // 
 
-async function addTimestamp(){
+async function addTimestamp(_outLogPath,_tsLogPath){
+    console.log('-started timestamping'.yellow)
     var output = [];
-    var eventlogsCleaned = JSON.parse(fs.readFileSync('./eventlogsCleaned.json'));
+    var eventlogsCleaned = JSON.parse(fs.readFileSync(_outLogPath));
     var length = eventlogsCleaned.length;
 
-    console.log(length)
-
     eventlogsCleaned.forEach(async element => {
+        var block = await web3.eth.getBlock(element.blockNumber);
         length = length -1;
-        let block = await web3.eth.getBlock(obj.blockNumber);
         element.timestamp = block.timestamp;
-        console.log(length)
+        output.push(element);
         if (length ==0){
-            fs.writeFileSync("./eventlogsTimestamped.json",JSON.stringify(output));
+            console.log('-writing timestamped file'.yellow)
+            fs.writeFileSync(_tsLogPath,JSON.stringify(output));
+            console.log('-timestamped file saved'.green)
+            process.exit();
             }
         return 0;
         
