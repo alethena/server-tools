@@ -13,7 +13,6 @@ module.exports.fetchEvents = fetchEvents;
  async function fetchEvents(_abi,_contrAddress,_inLogPath){
   //Instantiate the contract
   var myContract = await new web3.eth.Contract(_abi, _contrAddress);
-  console.log('-contract instantiated'.bold.green)
   // Before doing anything we should check that the node is not syncing currently
   // I.e. call eth.syncing and the answer should be 'false'
   // Else we might end up in a situation where the information we obtain is not up to date but no error is thrown
@@ -118,7 +117,6 @@ async function addTimestamp(_outLogPath,_tsLogPath){
             // }
             fs.writeFileSync(_tsLogPath,JSON.stringify(output));
             console.log('-timestamped file saved'.bold.green);
-            process.exit();
             }
         return 0;
     })};
