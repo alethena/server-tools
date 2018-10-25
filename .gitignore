@@ -1,1 +1,5 @@
 node_modules
+formattedLogs
+timeStampedLogs
+rawLogs
+.eslintrc.json
