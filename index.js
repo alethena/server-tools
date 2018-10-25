@@ -14,33 +14,30 @@ const inLogPath = './rawLogs/eventlogs.json';
 const tsLogPath = './timeStampedLogs/eventlogsTimestamped.json';
 
 async function main(){
-    lockfile.lock('./lockfile',{'retries':0},(err) => {
-        if (err){
+    try{
+        await helpers.syncTest();
+        lockfile.lockSync('./lockfile',{'retries':0});
+        let rawLog = await helpers.fetchEvents(abi,contrAddress,inLogPath);
+        let formattedLog = await helpers.addTimestamp(tsLogPath, rawLog);
+        fs.writeFileSync(tsLogPath,JSON.stringify(formattedLog));
+        console.log('INFO: '.green + new Date() +' Log saved'); 
+        lockfile.unlockSync('./lockfile');
+    }
+
+    // We distinguish between an error due to existing lockfile and random other errors
+    // This is necessary in order to unloc the lockfile, e.g. if the node falls out of sync
+
+    catch(error){
+        if (error.code==='EEXIST'){
             console.log('ERROR: '.bold.red + new Date() + ' Consider making the time interval longer'.red);
-        } 
-        else{
-            helpers.fetchEvents(abi,contrAddress,inLogPath, (err,eventLog) => {
-                if (err){
-                    console.log(err);
-                }
-                else{
-                    helpers.addTimestamp(tsLogPath, eventLog, (err,formattedLog) => {
-                        if (err){
-                            console.log(err);
-                        }
-                        else{
-                            fs.writeFileSync(tsLogPath,JSON.stringify(formattedLog));
-                            console.log('INFO: '.green + new Date() +' Log saved');
-                        }
-                        lockfile.unlock('./lockfile')
-                    });
-                }
-            });
         }
-        
-    });
+        else{
+            console.log(error);
+            lockfile.unlockSync('./lockfile');
+        }
+    }
 }
 
-new CronJob('*/20 * * * * *', function() {
+new CronJob('*/5 * * * *', function() {
     main();
 }, null, true);
