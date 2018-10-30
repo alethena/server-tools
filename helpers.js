@@ -11,32 +11,18 @@ catch(error){
     console.log(error);
 }
 
-function fetchEvents(_abi,_contrAddress,_inLogPath){
+function fetchEvents(_abi,_contrAddress){
     return new Promise(async function (resolve, reject){
-        web3.eth.isSyncing((err,response) =>{
-            if(err || response !== false){
-                reject('ERROR: '.bold.red + new Date() + ' Could not trigger log collection. There may be a problem with your node.',false)
-            }
-            else{
-                console.log('INFO: '.green + new Date() +' Triggered log collection'.bold);
-            }
-        });
-
         try{
+            let answ = await syncTest();
+            console.log(answ);
             var myContract = await new web3.eth.Contract(_abi, _contrAddress);
-        }
-        catch(err){
-            reject(err);
-        }
-        
-        try{
-            pastEvents = await myContract.getPastEvents('allEvents', {fromBlock: 1, toBlock: 'latest'});
-            fs.writeFileSync(_inLogPath, JSON.stringify(pastEvents));
+            let pastEvents = await myContract.getPastEvents('allEvents', {fromBlock: 1, toBlock: 'latest'});
             resolve(pastEvents);
         }
-        catch(error){
-            console.error(error);
-            reject(error);
+        catch(err){
+            console.error(err);
+            reject(err);
         }
     });       
 }
@@ -45,16 +31,16 @@ function syncTest(){
     return new Promise(async function (resolve,reject){
         web3.eth.isSyncing((err,response) =>{
             if(err || response !== false){
-                reject('ERROR: '.bold.red + new Date() + ' Could not trigger log collection. There may be a problem with your node.',false)
+                reject('ERROR: '.bold.red + new Date() + ' Could not trigger log collection. There may be a problem with your node.',false);
             }
             else{
-                resolve('Node is up');
+                resolve('INFO: '.green + new Date() +' Triggered log collection'.bold);
             }
         });
     });
 }
 
-function addTimestamp(_outLogPath, eventlogs){
+function addTimestamp(eventlogs){
     return new Promise(async function (resolve, reject){
         var output = [];
         var length = eventlogs.length-1;

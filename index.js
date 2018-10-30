@@ -17,15 +17,19 @@ async function main(){
     try{
         await helpers.syncTest();
         lockfile.lockSync('./lockfile',{'retries':0});
-        let rawLog = await helpers.fetchEvents(abi,contrAddress,inLogPath);
-        let formattedLog = await helpers.addTimestamp(tsLogPath, rawLog);
+
+        let rawLog = await helpers.fetchEvents(abi,contrAddress);
+        fs.writeFileSync(inLogPath,JSON.stringify(rawLog));
+
+        let formattedLog = await helpers.addTimestamp(rawLog);
         fs.writeFileSync(tsLogPath,JSON.stringify(formattedLog));
+
         console.log('INFO: '.green + new Date() +' Log saved'); 
         lockfile.unlockSync('./lockfile');
     }
 
     // We distinguish between an error due to existing lockfile and random other errors
-    // This is necessary in order to unloc the lockfile, e.g. if the node falls out of sync
+    // This is necessary in order to unlock the lockfile, e.g. if the node falls out of sync
 
     catch(error){
         if (error.code==='EEXIST'){
