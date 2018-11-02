@@ -1,6 +1,5 @@
 const helpers = require('./helpers.js');
 
-// const contrAddress = '0x6351f1c2e6dea96c9c608aa21c89663a3b7ea88e';
 const CronJob = require('cron').CronJob;
 const color = require('colors');
 const lockfile = require('lockfile');
@@ -8,10 +7,10 @@ const abi = require('./abi.json');
 const fs = require('fs');
 
 
-const contrAddress = '0x29317B796510afC25794E511e7B10659Ca18048B';
+const contrAddress = '0x6351f1c2e6DEa96c9C608aA21c89663A3b7EA88E';
 
 const inLogPath = './rawLogs/eventlogs.json';
-const tsLogPath = './timeStampedLogs/eventlogsTimestamped.json';
+const tsLogPath = '/var/www/html/eventlogsTimestamped.json';
 
 async function main(){
     try{
