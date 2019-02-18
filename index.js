@@ -7,10 +7,10 @@ const abi = require('./abi.json');
 const fs = require('fs');
 
 
-const contrAddress = '0x6351f1c2e6DEa96c9C608aA21c89663A3b7EA88E';
+const contrAddress = '0x32767bF25B395F35960DA67BEb143fEE663D50Df';
 
 const inLogPath = './rawLogs/eventlogs.json';
-const tsLogPath = '/var/www/html/eventlogsTimestamped.json';
+const tsLogPath = './rawLogs/eventlogsTimestamped.json';
 
 async function main(){
     try{
@@ -41,6 +41,6 @@ async function main(){
     }
 }
 
-new CronJob('*/5 * * * *', function() {
+new CronJob('*/2 * * * *', function() {
     main();
 }, null, true);
