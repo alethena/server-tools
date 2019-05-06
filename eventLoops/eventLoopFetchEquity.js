@@ -4,11 +4,9 @@ const blockNumberToTimestamp = require('../web3/blockNumberToTimestamp').blockNu
 const getLatestBlockNumber = require('../web3/getLatestBlockNumber').getLatestBlockNumber;
 const ALEQABI = require('../abis/ALEQABI.json');
 const SDABI = require('../abis/SDABI.json');
-//Queries
 
 
 async function main() {
-    //Equity queries
     const sql1 = `SELECT equityAddress, equityLastBlock FROM companies WHERE equityActive = 1`;
     const latestBlock = await getLatestBlockNumber();
 
@@ -35,25 +33,15 @@ async function main() {
                 console.log(error);
             }
         })
-
     }, (err) => {
         console.log(err);
     });
-
-    // //SD queries
-    // const sql2 = `SELECT SDAddress, SDLastBlock FROM companies WHERE SDActive = 1`
-    // db.query(sql2, []).then((dbResponse) => {
-    //     dbResponse.forEach((company) => {
-    //         const SDAddress = company.SDAddress;
-    //         const lastBlock = company.SDLastBlock
-    //     })
-    // });
 }
 
 main();
-// select equityAddress from companies where equityActive = 1
 
-// select SDAddress from companies where SDActive = 1 
 function isEquityTransfer(logEntry) {
     return (logEntry.event === 'Transfer')
 }
+
+module.exports.fetchEquity = main;

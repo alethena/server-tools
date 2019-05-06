@@ -1,7 +1,7 @@
 
 function convertToCSV(notCSV) {
     const CSVOutput;
-    return CSVOutput;
+    return notCSV;
 }
 
 module.exports.convertToCSV = convertToCSV;

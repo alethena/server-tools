@@ -7,7 +7,6 @@ async function main() {
     await db.query(sql1, []).then((dbResponse) => {
         dbResponse.forEach(async (company) => {
             try {
-                console.log(company.SDAddress, company.lastBlockReported);
                 const sql2 = `SELECT * FROM SDTransactions WHERE contractAddress = ? blockNumber > ?`
                 const txnsToReport = await db.query(sql2, [company.SDAddress, company.lastBlockReported]);
                 const txnCSV = await convertToCSV(txnsToReport);
@@ -19,7 +18,6 @@ async function main() {
             } catch (error) {
                 console.log(error);
             }
-
         })
 
     }, (err) => {
@@ -27,4 +25,4 @@ async function main() {
     });
 }
 
-main();
+module.exports.SDReport = main;
