@@ -3,45 +3,44 @@ const fetchEvents = require('../web3/fetchEvents').fetchEvents;
 const blockNumberToTimestamp = require('../web3/blockNumberToTimestamp').blockNumberToTimestamp;
 const getLatestBlockNumber = require('../web3/getLatestBlockNumber').getLatestBlockNumber;
 const ALEQABI = require('../abis/ALEQABI.json');
-const SDABI = require('../abis/SDABI.json');
-
+const async = require('async');
+const stripLog = require('../helpers/stripEquityLog').stripLog;
 
 async function main() {
     const sql1 = `SELECT equityAddress, equityLastBlock FROM companies WHERE equityActive = 1`;
-    const latestBlock = await getLatestBlockNumber();
-
-    await db.query(sql1, []).then((dbResponse) => {
-        dbResponse.forEach(async (company) => {
-            try {
-                const logs = await fetchEvents(ALEQABI, company.equityAddress, company.equityLastBlock);
-                logs.filter(isEquityTransfer).forEach(async (logEntry) => {
-                    const timestamp = await blockNumberToTimestamp(logEntry.blockNumber);
-                    const sqlInsertTx = `REPLACE INTO equityTransactions (txHash, contractAddress, sender, receiver, blockNumber, timestamp, amount) VALUES(?,?,?,?,?,?,?)`;
-
-                    await db.query(sqlInsertTx,
-                        [
-                            logEntry.transactionHash,
-                            company.equityAddress,
-                            logEntry.returnValues.from,
-                            logEntry.returnValues.to,
-                            logEntry.blockNumber,
-                            timestamp,
-                            logEntry.returnValues.value
-                        ]);
-                })
-            } catch (error) {
-                console.log(error);
-            }
-        })
-    }, (err) => {
-        console.log(err);
-    });
+    try {
+        const latestBlock = await getLatestBlockNumber();
+        companies = await db.query(sql1, []);
+        
+        companies.forEach(async (company) => {
+            const logs = await fetchEvents(ALEQABI, company.equityAddress, company.equityLastBlock);
+            async.each(logs.filter(isEquityTransfer), function (logEntry, callback) {
+                stripLog(logEntry, company).then((dataToInsert) => {
+                    db.query(sqlInsertTx, dataToInsert).then(callback);
+                });
+            }, () => {
+                writeLastBlock(latestBlock, company.equityAddress);
+            });
+        });
+    } catch (error) {
+        console.log(error);
+    }
 }
 
-main();
 
 function isEquityTransfer(logEntry) {
     return (logEntry.event === 'Transfer')
 }
+
+async function writeLastBlock(latestBlock, equityAddress) {
+    const sqlLastBlock = `UPDATE companies SET equityLastBlock = ? WHERE equityAddress = ?;`
+    db.query(sqlLastBlock, [latestBlock, equityAddress]).then((answ) => {
+        return true
+    }, (err) => {
+        throw (err);
+    });
+}
+
+const sqlInsertTx = `REPLACE INTO equityTransactions (txHash, contractAddress, sender, receiver, blockNumber, timestamp, amount) VALUES(?,?,?,?,?,?,?)`;
 
 module.exports.fetchEquity = main;

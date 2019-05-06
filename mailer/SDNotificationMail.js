@@ -3,9 +3,9 @@ const transporter = require('./transporter').transporter;
 async function sendSDNotification(fileName, content, recipients) {
     // setup e-mail data
     var mailOptions = {
-        from: '"Alethena Share Dispenser JMT V. 0.1" <sharedispenser@gmail.com>', // sender address (who sends)
+        from: '"Alethena Share Dispenser JMT V. 1.0" <sharedispenser@gmail.com>', // sender address (who sends)
      //    to: 'b.rickenbacher@intergga.ch, benjamin@alethena.com', // list of receivers (who receives)
-         to: reci, // list of receivers (who receives)
+         to: recipients, // list of receivers (who receives)
  
         subject: 'Share Dispenser Transaction Notification', // Subject line
         text: "", // plaintext body

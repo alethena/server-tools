@@ -8,44 +8,52 @@ const SDABI = require('../abis/SDABI.json');
 
 
 async function main() {
-    // Get latest block and relevant companies
-    const sql1 = `SELECT SDAddress, SDLastBlock FROM companies WHERE SDActive = 1;`;
     try {
-        const latestBlock = await getLatestBlockNumber();
-        const dbResponse = await db.query(sql1, []);
+        const sql1 = `SELECT SDAddress, SDLastBlock FROM companies WHERE SDActive = 1;`;
+        var latestBlock = await getLatestBlockNumber();
+        var companies = await db.query(sql1, []);
+
+        companies.forEach(async (company) => {
+            const logs = await fetchEvents(SDABI, company.SDAddress, company.SDLastBlock);
+            length = logs.length;
+            async.each(logs.filter(isSDTransaction), function (logEntry, callback) {
+                stripLog(logEntry, company).then((dataToInsert) => {
+                    db.query(sqlInsertTx, dataToInsert).then(callback);
+                });
+            }, () => {
+                writeLastBlock(latestBlock, company.SDAddress)
+            });
+
+        });
     } catch (error) {
         console.log(error);
     }
+}
 
-    // Fetch log for all companies and save to DB
-    dbResponse.forEach(async (company) => {
-        try {
-            const logs = await fetchEvents(SDABI, company.SDAddress, company.SDLastBlock);
-            length = logs.length;
-
-            async.d
-
-            logs.filter(isSDTransaction).forEach(async (logEntry) => {
-                const dataToInsert = await stripLog(logEntry, company);
-                db.query(sqlInsertTx, dataToInsert).then(() => {
-                    length--;
-                    if (length === 0) {
-                        const sqlLastBlock = `UPDATE companies SET SDLastBlock = ? WHERE SDAddress = ?;`
-                        db.query(sqlLastBlock, [latestBlock, company.SDAddress]).then((answ) => {}, (err) => {
-                            console.log(err)
-                        });
-                    }
-                });
-            });
-        } catch (error) {
-            console.log(error);
-        }
+async function writeLastBlock(latestBlock, SDAddress) {
+    const sqlLastBlock = `UPDATE companies SET SDLastBlock = ? WHERE SDAddress = ?;`
+    db.query(sqlLastBlock, [latestBlock, SDAddress]).then((answ) => {
+        return true
+    }, (err) => {
+        throw (err);
     });
 }
+
 const sqlInsertTx =
-                    `REPLACE INTO SDTransactions 
-                    (txHash, contractAddress, buy, sell, price, fee, lastPrice, user, amount, blockNumber, timestamp) 
-                    VALUES(?,?,?,?,?,?,?,?,?,?,?);`;
+    `REPLACE INTO SDTransactions 
+        (txHash,
+        contractAddress,
+        buy,
+        sell,
+        price,
+        fee,
+        lastPrice,
+        user,
+        amount,
+        blockNumber,
+        timestamp
+        ) 
+        VALUES(?,?,?,?,?,?,?,?,?,?,?);`;
 
 
 function isSDTransaction(logEntry) {
