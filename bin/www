@@ -1,5 +1,10 @@
 #!/usr/bin/env node
+/**
+ * Event loop for other activities.
+ */
 
+cronJobs = require('../eventLoops/cronJobs').cronJobs;
+cronJobs();
 /**
  * Module dependencies.
  */
@@ -88,3 +93,4 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
+

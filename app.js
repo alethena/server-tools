@@ -28,6 +28,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/reporting', tradeReportingRouter);
+app.use('/admin', adminRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

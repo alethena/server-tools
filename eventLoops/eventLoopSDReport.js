@@ -17,11 +17,15 @@ async function main() {
             const sql3 = `SELECT emailAddress FROM notifications WHERE contractAddress = ?`
             const rawRecipients = await db.query(sql3, [company.SDAddress]);
             let recipients = [];
-            rawRecipients.forEach((recipient)=>{
+            rawRecipients.forEach((recipient) => {
                 recipients.push(recipient.emailAddress);
             });
-            // console.log(txnsToReport, recipients);
-            await sendMail(company.SDAddress+'.csv', txnCSV, recipients);
+
+            if (recipients[0] != undefined && txnsToReport[0] != undefined) {
+                lastBlockReported = await db.query(`SELECT blockNumber from SDTransactions ORDER BY blockNumber DESC LIMIT 1;`, []);
+                await db.query(`UPDATE companies SET lastBlockReported = ? WHERE SDAddress =?;`, [lastBlockReported[0].blockNumber, company.SDAddress]);
+                await sendMail(company.SDAddress + '.csv', txnCSV, recipients);
+            }
         })
     } catch (error) {
         console.log(error);
@@ -29,5 +33,3 @@ async function main() {
 }
 
 module.exports.SDReport = main;
-
-main();
