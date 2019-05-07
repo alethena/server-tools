@@ -1,0 +1,35 @@
+const db = require('../database/db');
+const async = require('async');
+const sendMail = require('../mailer/SDNotificationMail').sendSDNotification;
+const convertToCSV = require('../helpers/formatCSV').convertToCSV;
+
+async function main() {
+    const sql1 = `SELECT SDAddress, lastBlockReported FROM companies WHERE SDActive = 1`;
+
+    try {
+        const companies = await db.query(sql1, []);
+        companies.forEach(async (company) => {
+            const sql2 = `SELECT * FROM SDTransactions WHERE contractAddress = ? AND blockNumber > ?`
+            const txnsToReport = await db.query(sql2, [company.SDAddress, company.lastBlockReported]);
+            const txnCSV = await convertToCSV(txnsToReport);
+
+            // Format correctly and send out to recipients
+            const sql3 = `SELECT emailAddress FROM notifications WHERE contractAddress = ?`
+            const rawRecipients = await db.query(sql3, [company.SDAddress]);
+            let recipients = [];
+            rawRecipients.forEach((recipient) => {
+                recipients.push(recipient.emailAddress);
+            });
+
+            if (recipients[0] != undefined && txnsToReport[0] != undefined) {
+                lastBlockReported = await db.query(`SELECT blockNumber from SDTransactions ORDER BY blockNumber DESC LIMIT 1;`, []);
+                await db.query(`UPDATE companies SET lastBlockReported = ? WHERE SDAddress =?;`, [lastBlockReported[0].blockNumber, company.SDAddress]);
+                await sendMail(company.SDAddress + '.csv', txnCSV, recipients);
+            }
+        })
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+module.exports.SDReport = main;
