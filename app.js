@@ -10,6 +10,11 @@ var indexRouter = require('./routes/index');
 var tradeReportingRouter = require('./routes/tradeReporting');
 var usersRouter = require('./routes/users');
 var helmet = require('helmet');
+const cors = require('cors');
+var corsOptions = {
+  origin: '*',
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204 
+}
 
 var app = express();
 
@@ -17,6 +22,8 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(helmet());
+app.use(cors(corsOptions));
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({

@@ -2,12 +2,12 @@ var express = require('express');
 var router = express.Router();
 const db = require('../database/db');
 const generateVerificationCode = require('../helpers/generateConfirmationCode').codeGenerator;
-
 const validateParameters = require('../helpers/validateReportParameters').validateParameters;
+const sendConfirmationMail = require('../mailer/confirmationMail').sendConfirmationMail;
 
 /* GET home page. */
-router.get('/reporttrade', async function (req, res, next) {
-
+router.post('/reporttrade', async function (req, res, next) {
+  console.log(req.body);
   validateParameters(req.body).then(async (dataToWrite) => {
     const code = await generateVerificationCode(req.body.email);
 
@@ -15,7 +15,14 @@ router.get('/reporttrade', async function (req, res, next) {
     dataToWrite.push(code);
 
     const sql = `REPLACE INTO reportedTrades (position, emailAddress, tradedVolume, totalPrice, txHash, reason, confirmed, timestamp, code) VALUES(?,?,?,?,?,?,?,?,?);`;
-    db.query(sql, dataToWrite).then(() => {
+    db.query(sql, dataToWrite).then(async () => {
+
+      //SEND THE MAIL here!!!
+      try {
+        await sendConfirmationMail(code, req.body.emailAddress);
+      } catch (error) {
+        res.status(500).json(error);
+      }
       res.json('Please check your mail!');
     }, (error) => {
       res.status(500).json(error);
@@ -30,8 +37,13 @@ router.get('/reporttrade', async function (req, res, next) {
 router.get('/confirmtrade/:code', function (req, res, next) {
   const code = req.params.code;
   const sql = `UPDATE reportedTrades SET confirmed = 1 WHERE code = ?;`;
-  db.query(sql, [code]).then(() => {
-    res.render('index');
+  db.query(sql, [code]).then((response) => {
+    if (response.changedRows === 0) {
+      res.render('error');
+    } else {
+      console.log(response.changedRows);
+      res.render('index');
+    }
   }, () => {
     res.send("An error occured");
   });
