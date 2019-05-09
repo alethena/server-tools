@@ -1,6 +1,6 @@
 const transporter = require('./transporter').transporter;
 
-async function sendConfirmationMail(code, recipient) {
+async function sendConfirmationMail(htmlBody, recipient) {
     // setup e-mail data
     var mailOptions = {
         from: '"Alethena Transaction Reporting" <sharedispenser@gmail.com>', // sender address (who sends)
@@ -9,7 +9,7 @@ async function sendConfirmationMail(code, recipient) {
  
         subject: 'Please confirm your reported trade', // Subject line
         text: "", // plaintext body
-        html: `Plase click the link below: <br><br> <a href="http://localhost:3000/reporting/confirmtrade/` + code + '"> Confirm Trade </a>', // html body
+        html: htmlBody, // html body
     };
  
     // send mail with defined transport object

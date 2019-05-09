@@ -4,14 +4,21 @@ async function stripLog(logEntry, company) {
     return new Promise(async (resolve, reject) => {
         try {
             const timestamp = await blockNumberToTimestamp(logEntry.blockNumber);
+            // console.log(logEntry);
             resolve([
                 logEntry.transactionHash,
+                logEntry.event,
                 company.equityAddress,
+                timestamp,
+                logEntry.blockNumber,
+                logEntry.transactionIndex,
+                logEntry.logIndex,
                 logEntry.returnValues.from,
                 logEntry.returnValues.to,
-                logEntry.blockNumber,
-                timestamp,
-                logEntry.returnValues.value
+                logEntry.returnValues.value,
+                logEntry.returnValues.shareholder,
+                logEntry.returnValues.amout,
+                logEntry.returnValues.message
             ]);
         } catch (error) {
             reject(error);

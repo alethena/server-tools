@@ -4,6 +4,7 @@ const db = require('../database/db');
 const generateVerificationCode = require('../helpers/generateConfirmationCode').codeGenerator;
 const validateParameters = require('../helpers/validateReportParameters').validateParameters;
 const sendConfirmationMail = require('../mailer/confirmationMail').sendConfirmationMail;
+const ejs = require('ejs');
 
 /* GET home page. */
 router.post('/reporttrade', async function (req, res, next) {
@@ -19,7 +20,11 @@ router.post('/reporttrade', async function (req, res, next) {
 
       //SEND THE MAIL here!!!
       try {
-        await sendConfirmationMail(code, req.body.emailAddress);
+        ejs.renderFile('./views/messageBody.ejs', {
+          'confURL': 'http://localhost:3000/reporting/confirmtrade/' + code
+        }, null, async function (err, str) {
+          await sendConfirmationMail(str, req.body.emailAddress);
+        });
       } catch (error) {
         res.status(500).json(error);
       }

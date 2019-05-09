@@ -14,7 +14,7 @@ async function main() {
         
         companies.forEach(async (company) => {
             const logs = await fetchEvents(ALEQABI, company.equityAddress, company.equityLastBlock);
-            async.each(logs.filter(isEquityTransfer), function (logEntry, callback) {
+            async.each(logs.filter(isEquityEvent), function (logEntry, callback) {
                 stripLog(logEntry, company).then((dataToInsert) => {
                     db.query(sqlInsertTx, dataToInsert).then(callback);
                 });
@@ -28,8 +28,8 @@ async function main() {
 }
 
 
-function isEquityTransfer(logEntry) {
-    return (logEntry.event === 'Transfer')
+function isEquityEvent(logEntry) {
+    return (logEntry.event === 'Transfer' || logEntry.event === 'Mint')
 }
 
 async function writeLastBlock(latestBlock, equityAddress) {
@@ -41,6 +41,6 @@ async function writeLastBlock(latestBlock, equityAddress) {
     });
 }
 
-const sqlInsertTx = `REPLACE INTO equityTransactions (txHash, contractAddress, sender, receiver, blockNumber, timestamp, amount) VALUES(?,?,?,?,?,?,?)`;
+const sqlInsertTx = `REPLACE INTO equityTransactions (txHash, event, contractAddress, timestamp, blockNumber, transactionIndex, logIndex, sender, receiver, value, shareholder, amount, message) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)`;
 
 module.exports.fetchEquity = main;

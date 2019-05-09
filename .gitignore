@@ -3,3 +3,4 @@ formattedLogs
 timeStampedLogs
 rawLogs
 .eslintrc.json
+logFiles/
