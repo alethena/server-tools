@@ -53,4 +53,12 @@ router.get('/confirmtrade/:code', function (req, res, next) {
     res.send("An error occured");
   });
 });
+
+router.get('/recenttrades', function (req, res, next) {
+  const sql = 'SELECT timestamp, position, tradedVolume, totalPrice, txHash FROM reportedTrades WHERE confirmed = 1;';
+  db.query(sql, []).then((trades) => {
+    console.log(trades);
+    res.send(trades);
+  });
+})
 module.exports = router;
