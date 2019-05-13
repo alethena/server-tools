@@ -23,11 +23,11 @@ async function stripLog(logEntry, company) {
                 company.SDAddress,
                 buy,
                 !buy,
-                totalPrice,
+                Number(totalPrice.toString()),
                 0,
-                logEntry.returnValues.nextPrice,
+                Number(logEntry.returnValues.nextPrice.toString()),
                 user,
-                logEntry.returnValues.amount,
+                Number(logEntry.returnValues.amount.toString()),
                 logEntry.blockNumber,
                 timestamp
             ]);

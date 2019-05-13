@@ -18,6 +18,8 @@ async function main() {
             length = logs.length;
             async.each(logs.filter(isSDTransaction), function (logEntry, callback) {
                 stripLog(logEntry, company).then((dataToInsert) => {
+                    console.log(dataToInsert);
+                    callback;
                     db.query(sqlInsertTx, dataToInsert).then(callback);
                 });
             }, () => {

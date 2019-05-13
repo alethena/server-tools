@@ -15,7 +15,7 @@ async function stripLog(logEntry, company) {
                 logEntry.logIndex,
                 logEntry.returnValues.from,
                 logEntry.returnValues.to,
-                logEntry.returnValues.value,
+                Number(logEntry.returnValues.value.toString()),
                 logEntry.returnValues.shareholder,
                 logEntry.returnValues.amout,
                 logEntry.returnValues.message
