@@ -31,7 +31,7 @@ async function main() {
 }
 
 async function writeLastBlock(latestBlock, SDAddress) {
-    const sqlLastBlock = `UPDATE companies SET SDLastBlock = ? WHERE SDAddress = ?;`
+    const sqlLastBlock = `UPDATE companies SET SDLastBlock = ? WHERE SDAddress = ?;`;
     db.query(sqlLastBlock, [latestBlock, SDAddress]).then((answ) => {
         return true
     }, (err) => {

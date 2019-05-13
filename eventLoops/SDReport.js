@@ -4,12 +4,12 @@ const sendMail = require('../mailer/SDNotificationMail').sendSDNotification;
 const convertToCSV = require('../helpers/formatCSV').convertToCSV;
 
 async function main() {
-    const sql1 = `SELECT SDAddress, lastBlockReported FROM companies WHERE SDActive = 1`;
+    const sql1 = `SELECT SDAddress, lastBlockReported FROM companies WHERE SDActive = 1;`;
 
     try {
         const companies = await db.query(sql1, []);
         companies.forEach(async (company) => {
-            const sql2 = `SELECT * FROM SDTransactions WHERE contractAddress = ? AND blockNumber > ?`
+            const sql2 = `SELECT * FROM SDTransactions WHERE contractAddress = ? AND blockNumber > ?;`;
             const txnsToReport = await db.query(sql2, [company.SDAddress, company.lastBlockReported]);
             const txnCSV = await convertToCSV(txnsToReport);
 
