@@ -21,7 +21,7 @@ router.post('/reporttrade', async function (req, res, next) {
       //SEND THE MAIL here!!!
       try {
         ejs.renderFile('./views/messageBody.ejs', {
-          'confURL': 'http://localhost:3000/reporting/confirmtrade/' + code
+          'confURL': 'http://104.196.209.167/reporting/confirmtrade/' + code
         }, null, async function (err, str) {
           await sendConfirmationMail(str, req.body.emailAddress);
         });

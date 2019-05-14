@@ -1,12 +1,12 @@
 var nodemailer = require('nodemailer');
 
 var transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
+    host: 'smtp.sendgrid.net',
     port: 465,
-    secure: true, // use SSL
+    secure: true,
     auth: {
-        user: 'sharedispenser@gmail.com',
-        pass: 'kGNjLN7zGdenAKCG4C22CTjK'
+        user: 'apikey',
+        pass: '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'
     }
  });
 
