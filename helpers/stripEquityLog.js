@@ -18,7 +18,7 @@ async function stripLog(logEntry, company) {
                     logEntry.returnValues.to,
                     Number(logEntry.returnValues.value.toString()),
                     logEntry.returnValues.shareholder,
-                    logEntry.returnValues.amout,
+                    logEntry.returnValues.amount,
                     logEntry.returnValues.message
                 ]);
             } else {
@@ -34,7 +34,7 @@ async function stripLog(logEntry, company) {
                     logEntry.returnValues.to,
                     logEntry.returnValues.value,
                     logEntry.returnValues.shareholder,
-                    logEntry.returnValues.amout,
+                    Number(logEntry.returnValues.amount.toString()),
                     logEntry.returnValues.message
                 ]);
             }

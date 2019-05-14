@@ -1,4 +1,4 @@
 {
-    "IPCPath": "/home/benjamin/.ethereum/rinkeby/geth.ipc",
+    "IPCPath": "/home/benjamin/.ethereum/geth.ipc",
     "InfuraPath": "wss://rinkeby.infura.io/ws/v3/2a59f4ddc9b14dd5b321f5fbee33f77d"
 }
