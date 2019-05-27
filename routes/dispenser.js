@@ -13,7 +13,6 @@ router.get('/:txhash/:number', async function (req, res, next) {
         console.log("PING!");
         if (txReceipt) {
             clearInterval(ID);
-            res.json(txReceipt);
             web3.eth.getCoinbase((error, coinbase) => {
 
                 web3.eth.personal.unlockAccount(coinbase, 'ShareDispens', 10).then((coinbaseUnlocked) => {
@@ -21,13 +20,17 @@ router.get('/:txhash/:number', async function (req, res, next) {
                     console.log('Unlocked: ', coinbaseUnlocked);
 
                     const ALEQ = new web3.eth.Contract(abi, ALEQAddress, {
-                        gasPrice: 10 * 10 ** 9,
+                        gasPrice: 20 * 10 ** 9,
                         from: coinbase,
                         gas: 70000
                     });
                     console.log("from: ", txReceipt.from);
+                    // console.log(ALEQ.methods);
                     ALEQ.methods.transfer(txReceipt.from, req.params.number).send().then((tx2Receipt) => {
                         console.log('TX Receipt for tx1: ', tx2Receipt);
+                        res.json(tx2Receipt);
+                    }).catch((err)=> {
+                        console.log(err);
                     });
 
                 });
