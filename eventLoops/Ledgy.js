@@ -44,6 +44,7 @@ async function generateLedgyLog() {
                 fs.writeFileSync(outputPath + company.tokenSymbol + '.json', JSON.stringify(outputFile));
                 // console.log(outputFile);
             });
+            return;
         });
     } catch (error) {
         console.log(error);

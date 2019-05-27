@@ -22,10 +22,12 @@ async function main() {
                 });
             }, () => {
                 writeLastBlock(latestBlock, company.equityAddress);
+                return;
             });
         });
     } catch (error) {
         console.log(error);
+        return;
     }
 }
 

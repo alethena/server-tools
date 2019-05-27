@@ -22,8 +22,9 @@ async function main() {
                     callback;
                     db.query(sqlInsertTx, dataToInsert).then(callback);
                 });
-            }, () => {
-                writeLastBlock(latestBlock, company.SDAddress)
+            }, async () => {
+                await writeLastBlock(latestBlock, company.SDAddress);
+                return
             });
 
         });

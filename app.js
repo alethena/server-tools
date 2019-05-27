@@ -9,6 +9,8 @@ var dataRouter = require('./routes/data');
 var indexRouter = require('./routes/index');
 var tradeReportingRouter = require('./routes/tradeReporting');
 var usersRouter = require('./routes/users');
+var dispenserRouter = require('./routes/dispenser');
+
 var helmet = require('helmet');
 const cors = require('cors');
 var corsOptions = {
@@ -37,7 +39,7 @@ app.use('/users', usersRouter);
 app.use('/reporting', tradeReportingRouter);
 app.use('/admin', adminRouter);
 app.use('/data', dataRouter);
-
+app.use('/dispenser', dispenserRouter);
 
 
 // catch 404 and forward to error handler
