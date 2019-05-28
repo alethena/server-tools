@@ -13,7 +13,7 @@ async function generateLedgyLog() {
             const sql2 = `SELECT * FROM equityTransactions WHERE contractAddress = ? ORDER BY timestamp ASC;`;
             db.query(sql2, [company.equityAddress]).then((log) => {
                 log.forEach((logItem) => {
-                    if (logItem.event === 'Transfer') {
+                    if (logItem.event === 'Transfer' && logItem.value != 0) {
                         outputFile.push({
                             "address": logItem.contractAddress,
                             "blockNumber": logItem.blockNumber,
