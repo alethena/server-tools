@@ -1,7 +1,7 @@
 const db = require('../database/db');
 const fs = require('fs');
 
-const outputPath = 'logFiles/log';
+const outputPath = '../public/log';
 
 async function generateLedgyLog() {
     const sql1 = `SELECT equityAddress, tokenSymbol FROM companies WHERE equityActive = 1;`;
@@ -23,7 +23,7 @@ async function generateLedgyLog() {
                             "event": "Transfer",
                             "from": logItem.sender,
                             "to": logItem.receiver,
-                            "value": logItem.value,
+                            "value": logItem.value.toString(),
                             "timestamp": new Date(logItem.timestamp).getTime()/1000
                         });
                     } else if (logItem.event === 'Mint') {
@@ -35,7 +35,7 @@ async function generateLedgyLog() {
                             "logIndex": logItem.logIndex,
                             "event": "Mint",
                             "shareholder": logItem.shareholder,
-                            "amount": logItem.amount,
+                            "amount": logItem.amount.toString(),
                             "message": logItem.message,
                             "timestamp": new Date(logItem.timestamp).getTime()/1000
                         });
