@@ -1,4 +1,6 @@
 const transporter = require('./transporter').transporter;
+var Raven = require('raven');
+Raven.config('https://853db40d557b42189a6b178ba7428001@sentry.io/1470742').install();
 
 async function sendSDNotification(fileName, content, recipients) {
     // setup e-mail data
@@ -24,7 +26,7 @@ async function sendSDNotification(fileName, content, recipients) {
         info = await transporter.sendMail(mailOptions);
         console.log('Message sent: ' + JSON.stringify(info));
     } catch (e) {
-        console.log(e);
+        Raven.captureException(e);
     }
  
  }

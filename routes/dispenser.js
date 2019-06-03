@@ -10,7 +10,7 @@ router.get('/:txhash/:number', async function (req, res, next) {
     let txReceipt = null;
     let ID = setInterval(async () => {
         txReceipt = await web3.eth.getTransactionReceipt(req.params.txhash);
-        console.log("PING!");
+        // console.log("PING!");
         if (txReceipt) {
             clearInterval(ID);
             res.json(txReceipt);

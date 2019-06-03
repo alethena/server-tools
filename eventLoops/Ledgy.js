@@ -2,6 +2,8 @@ const db = require('../database/db');
 const fs = require('fs');
 
 const outputPath = '../public/log';
+var Raven = require('raven');
+Raven.config('https://853db40d557b42189a6b178ba7428001@sentry.io/1470742').install();
 
 async function generateLedgyLog() {
     const sql1 = `SELECT equityAddress, tokenSymbol FROM companies WHERE equityActive = 1;`;
@@ -47,7 +49,7 @@ async function generateLedgyLog() {
             return;
         });
     } catch (error) {
-        console.log(error);
+        Raven.captureException(error);
     }
 }
 

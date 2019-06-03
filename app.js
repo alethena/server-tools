@@ -10,6 +10,8 @@ var indexRouter = require('./routes/index');
 var tradeReportingRouter = require('./routes/tradeReporting');
 var usersRouter = require('./routes/users');
 var dispenserRouter = require('./routes/dispenser');
+var Raven = require('raven');
+Raven.config('https://853db40d557b42189a6b178ba7428001@sentry.io/1470742').install();
 
 var helmet = require('helmet');
 const cors = require('cors');

@@ -5,7 +5,8 @@ const getLatestBlockNumber = require('../web3/getLatestBlockNumber').getLatestBl
 const stripLog = require('../helpers/stripSDLog').stripLog;
 const SDABI = require('../abis/SDABI.json');
 //Queries
-
+var Raven = require('raven');
+Raven.config('https://853db40d557b42189a6b178ba7428001@sentry.io/1470742').install();
 
 async function main() {
     try {
@@ -29,7 +30,7 @@ async function main() {
 
         });
     } catch (error) {
-        console.log(error);
+        Raven.captureException(error);
     }
 }
 

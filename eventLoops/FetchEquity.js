@@ -5,6 +5,8 @@ const getLatestBlockNumber = require('../web3/getLatestBlockNumber').getLatestBl
 const ALEQABI = require('../abis/ALEQABI.json');
 const async = require('async');
 const stripLog = require('../helpers/stripEquityLog').stripLog;
+var Raven = require('raven');
+Raven.config('https://853db40d557b42189a6b178ba7428001@sentry.io/1470742').install();
 
 async function main() {
     const sql1 = `SELECT equityAddress, equityLastBlock FROM companies WHERE equityActive = 1;`;
@@ -26,7 +28,7 @@ async function main() {
             });
         });
     } catch (error) {
-        console.log(error);
+        Raven.captureException(error)
         return;
     }
 }
