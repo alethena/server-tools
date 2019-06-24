@@ -42,7 +42,7 @@ router.post('/user/requestmail', async function (req, res, next) {
   const contractaddress = req.body.contractaddress;
   console.log(email);
   const encryptedText = QuickEncrypt.encrypt(email, keys.public);
-  let link = 'api.alethena.com/servertools/admin/user/add/authenticated/'
+  let link = 'https://api.alethena.com/servertools/admin/user/add/authenticated/'
   link += email;
   link += '/';
   link += encryptedText;
