@@ -54,7 +54,7 @@ router.post('/user/requestmail', async function (req, res, next) {
     console.log(error);
   }
   // CALL emailer function with email and encrypted text
-  res.send('Email sent');
+  res.json({message: 'Email sent'});
 
 })
 
