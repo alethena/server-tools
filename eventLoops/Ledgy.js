@@ -1,6 +1,6 @@
 const db = require('../database/db');
 const fs = require('fs');
-
+const path = require('path');
 const outputPath = '../public/log';
 var Raven = require('raven');
 Raven.config('https://853db40d557b42189a6b178ba7428001@sentry.io/1470742').install();
@@ -26,7 +26,7 @@ async function generateLedgyLog() {
                             "from": logItem.sender,
                             "to": logItem.receiver,
                             "value": logItem.value.toString(),
-                            "timestamp": new Date(logItem.timestamp).getTime()/1000
+                            "timestamp": new Date(logItem.timestamp).getTime() / 1000
                         });
                     } else if (logItem.event === 'Mint') {
                         outputFile.push({
@@ -39,11 +39,12 @@ async function generateLedgyLog() {
                             "shareholder": logItem.shareholder,
                             "amount": logItem.amount.toString(),
                             "message": logItem.message,
-                            "timestamp": new Date(logItem.timestamp).getTime()/1000
+                            "timestamp": new Date(logItem.timestamp).getTime() / 1000
                         });
                     }
                 });
-                fs.writeFileSync(outputPath + company.tokenSymbol + '.json', JSON.stringify(outputFile));
+                fs.writeFileSync(path.join(__dirname, '../public/' + company.tokenSymbol + '.json'), JSON.stringify(outputFile))
+                // fs.writeFileSync(outputPath + company.tokenSymbol + '.json', JSON.stringify(outputFile));
                 // console.log(outputFile);
             });
             return;
