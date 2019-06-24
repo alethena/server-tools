@@ -11,7 +11,7 @@ var tradeReportingRouter = require('./routes/tradeReporting');
 var usersRouter = require('./routes/users');
 var dispenserRouter = require('./routes/dispenser');
 var Raven = require('raven');
-Raven.config('https://853db40d557b42189a6b178ba7428001@sentry.io/1470742').install();
+// Raven.config('https://853db40d557b42189a6b178ba7428001@sentry.io/1470742').install();
 
 var helmet = require('helmet');
 const cors = require('cors');
@@ -36,12 +36,12 @@ app.use(express.urlencoded({
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '/public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/reporting', tradeReportingRouter);
-app.use('/admin', adminRouter);
-app.use('/data', dataRouter);
-app.use('/dispenser', dispenserRouter);
+app.use('/servertools/', indexRouter);
+app.use('/servertools/users', usersRouter);
+app.use('/servertools/reporting', tradeReportingRouter);
+app.use('/servertools/admin', adminRouter);
+app.use('/servertools/data', dataRouter);
+app.use('/servertools/dispenser', dispenserRouter);
 
 
 // catch 404 and forward to error handler

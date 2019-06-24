@@ -1,6 +1,9 @@
 var express = require('express');
 var router = express.Router();
 const db = require('../database/db');
+const QuickEncrypt = require('quick-encrypt')
+let keys = QuickEncrypt.generate(1024) // Use either 2048 bits or 1024 bits.
+const sendSignupMail = require('../mailer/signupMail').sendSignupMail;
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {
@@ -31,6 +34,53 @@ router.post('/company/add', function (req, res, next) {
       res.status(500).send(error);
     }
   });
+});
+
+
+router.post('/user/requestmail', async function (req, res, next) {
+  const email = req.body.email;
+  const contractaddress = req.body.contractaddress;
+  console.log(email);
+  const encryptedText = QuickEncrypt.encrypt(email, keys.public);
+  let link = 'api.alethena.com/servertools/admin/user/add/authenticated/'
+  link += email;
+  link += '/';
+  link += encryptedText;
+  link += '/';
+  link += contractaddress;
+  try {
+    await sendSignupMail(link, email);
+  } catch (error) {
+    console.log(error);
+  }
+  // CALL emailer function with email and encrypted text
+  res.send('Email sent');
+
+})
+
+router.get('/user/add/authenticated/:email/:enc/:contractaddress', function (req, res, next) {
+  const email = req.params.email;
+  const enc = req.params.enc;
+  const contractAddress = req.params.contractaddress;
+
+  let check = QuickEncrypt.decrypt(enc, keys.private);
+
+  if (check === email) {
+    const sql = `INSERT INTO notifications VALUES(?,?);`;
+
+    let dataToInsert = [
+      contractAddress,
+      email
+    ];
+
+    db.query(sql, dataToInsert).then(() => {
+      res.send('You are now registered!');
+    }, (error) => {
+      res.status(500).send(error);
+    });
+  } else {
+    res.render('error');
+  }
 });
 
 router.post('/user/add', function (req, res, next) {
