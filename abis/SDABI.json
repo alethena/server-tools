@@ -49,17 +49,6 @@
     "stateMutability": "view",
     "type": "function"
 }, {
-    "constant": false,
-    "inputs": [{
-        "name": "newALEQContractAddress",
-        "type": "address"
-    }],
-    "name": "setALEQContractAddress",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-}, {
     "constant": true,
     "inputs": [],
     "name": "XCHFContractAddress",
@@ -69,23 +58,6 @@
     }],
     "payable": false,
     "stateMutability": "view",
-    "type": "function"
-}, {
-    "constant": false,
-    "inputs": [{
-        "name": "numberOfSharesToSell",
-        "type": "uint256"
-    }, {
-        "name": "limitInXCHF",
-        "type": "uint256"
-    }],
-    "name": "sellShares",
-    "outputs": [{
-        "name": "",
-        "type": "bool"
-    }],
-    "payable": false,
-    "stateMutability": "nonpayable",
     "type": "function"
 }, {
     "constant": false,
@@ -114,6 +86,26 @@
     }],
     "payable": false,
     "stateMutability": "view",
+    "type": "function"
+}, {
+    "constant": false,
+    "inputs": [{
+        "name": "seller",
+        "type": "address"
+    }, {
+        "name": "numberOfSharesToSell",
+        "type": "uint256"
+    }, {
+        "name": "limitInXCHF",
+        "type": "uint256"
+    }],
+    "name": "sellShares",
+    "outputs": [{
+        "name": "",
+        "type": "bool"
+    }],
+    "payable": false,
+    "stateMutability": "nonpayable",
     "type": "function"
 }, {
     "constant": false,
@@ -173,17 +165,6 @@
 }, {
     "constant": true,
     "inputs": [],
-    "name": "ALEQContractAddress",
-    "outputs": [{
-        "name": "",
-        "type": "address"
-    }],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-}, {
-    "constant": true,
-    "inputs": [],
     "name": "sellEnabled",
     "outputs": [{
         "name": "",
@@ -202,6 +183,23 @@
     }],
     "payable": false,
     "stateMutability": "view",
+    "type": "function"
+}, {
+    "constant": false,
+    "inputs": [{
+        "name": "buyer",
+        "type": "address"
+    }, {
+        "name": "numberOfSharesToBuy",
+        "type": "uint256"
+    }],
+    "name": "buyShares",
+    "outputs": [{
+        "name": "",
+        "type": "bool"
+    }],
+    "payable": false,
+    "stateMutability": "nonpayable",
     "type": "function"
 }, {
     "constant": false,
@@ -307,6 +305,17 @@
 }, {
     "constant": false,
     "inputs": [{
+        "name": "newQUITTContractAddress",
+        "type": "address"
+    }],
+    "name": "setQUITTContractAddress",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+}, {
+    "constant": false,
+    "inputs": [{
         "name": "newStatus",
         "type": "bool"
     }],
@@ -339,20 +348,6 @@
     }],
     "payable": false,
     "stateMutability": "view",
-    "type": "function"
-}, {
-    "constant": false,
-    "inputs": [{
-        "name": "numberOfSharesToBuy",
-        "type": "uint256"
-    }],
-    "name": "buyShares",
-    "outputs": [{
-        "name": "",
-        "type": "bool"
-    }],
-    "payable": false,
-    "stateMutability": "nonpayable",
     "type": "function"
 }, {
     "constant": false,
@@ -436,11 +431,22 @@
     "stateMutability": "nonpayable",
     "type": "function"
 }, {
+    "constant": true,
+    "inputs": [],
+    "name": "QUITTContractAddress",
+    "outputs": [{
+        "name": "",
+        "type": "address"
+    }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+}, {
     "inputs": [{
         "name": "initialXCHFContractAddress",
         "type": "address"
     }, {
-        "name": "initialALEQContractAddress",
+        "name": "initialQUITTContractAddress",
         "type": "address"
     }, {
         "name": "initialusageFeeAddress",
@@ -466,10 +472,10 @@
     "anonymous": false,
     "inputs": [{
         "indexed": false,
-        "name": "newALEQContractAddress",
+        "name": "newQUITTContractAddress",
         "type": "address"
     }],
-    "name": "ALEQContractAddressSet",
+    "name": "QUITTContractAddressSet",
     "type": "event"
 }, {
     "anonymous": false,
