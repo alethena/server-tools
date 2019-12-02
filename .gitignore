@@ -4,3 +4,4 @@ timeStampedLogs
 rawLogs
 .eslintrc.json
 logFiles/
+public/
